@@ -1,0 +1,642 @@
+Jinj template ve template a context gönderme
+flask tarafından kullanılan html tempaltı ve bu tempalte ın içinde hem html hem python çalışır css bootstrap
+html dönmesini jinja templatı render edererk dönmemiz gerekiyo içine python değer ifalan gönderebilryoruz
+bu şekilde 
+bunun için render_template fonksiyonunu dahil etmiliyz flask içindki
+flask default olarak bir tempalte isimi yazıyosak direk tempaltesın içine bakar
+bunun içine jinja templatı yazmak istiyoruz
+template a veri gönderirken fonksiyonun altında tanımlıyoruz render da templateın yaynına
+önce anhtar sonra veri adını giriyoruz
+{{number}}
+python verisi kullanırken böyle kullnaırz
+
+SÖZLÜĞÜ gönderme:
+-------------------
+article=dict()
+    article=["title"]="Deneme"
+    article["body"]="Deneme 123"
+    article["author"]="Musa şahin"
+fonksiyonun altında tanımladık
+article=article diyrek gönderdik
+{{article.body}} bu şekilde de ulaşablrz
+
+
+TEMPLATE INHERITANCE:
+------------------
+python daki mantık gibi
+bunu bir websitemizde birsürü html template olablr ve hepsinde de bootrtrapi kullanmak isteyeblrz
+index in içindeki şeyler islidk şimdi layout dan miras alıcaz dicez:
+{% extends "layout.html" %}
+
+Bloklar:
+--------
+blokları miras alacağımız yerde belirtirsek asıl yerde değişiklik yapablrz
+extende altığımızda ama title ı değiştirecz
+eğer block içinde birşey yazılmışsa bile overwrite yaparız
+blcok mantığı jinja templatın mantığı http de gözkmez
+
+<title>
+        {% block title %}
+        
+        {% endblock title %}
+    </title>
+
+BOOTSTRAP KULLANIMI:
+-----------------
+blok projesi yapcaz
+bootstrap kullanarak static navbar eklemeyi yapcaz
+css kütphanesi
+örenkleri alarak web sitesi gelişitreblrz
+layout a navbar eklicez
+layout a başka bir html dosyasını dahil ederek yapıcaz kod kalablğı yok
+navbar ı bottstrap  tan alcaz bootstrap 4 ten alcaz
+bootstrapı dahil etmek için bootstrap CDN i dahil etmeliyz
+https://getbootstrap.com/docs/4.0/getting-started/introduction/
+
+css i metanın altına ekliyoruz
+
+js kodalrı dahil etmiliyz
+body nin en altına atarız
+jquery i dahil etmesinin sebib mobil de güzel gözükmesi için küçülnce
+
+bootstrap static navbar yazdık
+https://getbootstrap.com/docs/4.0/examples/navbar-top/ 
+bunu beğndik
+kaynak koduna girip
+nav içinde buluna yeri alıp en başa nav.html in içinde body e yapıştırcaz
+
+
+bu bloğun daha güzel gzöükmesi marjinleşmiş şekilde gözükmesi için bootstrapte bir classı dahil etmleyiz
+şu anlık searchi kaldırcaz sonra yapıcaz
+form şeklinde olan buttonu kaldırkdı
+navbardaki hrefleri aylayıorz
+bazıları solda bazıları solda yapmak için
+
+<ul class="navbar-nav mr-auto">
+bu kod en sola yaslıyo
+bu yüzden bir tane ul oluşturp ml yapıcaz -auot
+
+bir tanıtım sayfası yapıcaz
+bootstrapteki bir div i oluşturarak 
+<div class="jumbotron text-center">
+    <h3>Yazılım bilimi bloğuna hoşgeldiniz</h3>
+</div> text-center ı sonradan tanımladık ortalıyor
+
+
+TEMPLATE LARDA KOŞUL KULLANIMI:
+------------------------------
+indexe bir değer göndericez
+indexte if yazıp tabe basarsak django oto oluşturyo yapıyo
+{% if  %}
+
+{% else %}
+{% endif %}
+if else arası if oluşturarak
+else end if arası else olur 
+
+{% if answer=="evet" %}
+<p>Cevabımız evetmiş</p>
+{% else %}
+<p>Cevap evet değil</p>
+{% endif %}
+{% endblock body %}
+
+
+{% if işlem==1 %}
+    <p>1.işlem</p>
+{% elif işlem==2 %}
+    <p>2.işlem</p>
+{% else %}
+    <p>geçersiz</p>
+{% endif %}
+ işlemleri blogları arasına koyduk
+
+
+ Template larda dögü kullanımı:
+ -----------------------------
+ bazen pythondan liste demet atablrz 
+ bunşaro tek tek yazdırmak isteyebilrz
+ bunun için numbers=[1,2,3,4,5]
+ bunu gönderdşk,
+
+{% for  in  %}
+    
+    {% endfor %}
+
+    <ul>
+    {% for number in numbers %}
+        <li>{{number}}</li>
+    {% endfor %}
+</ul> 
+
+her döndüğünde bir li yazdırcak
+
+
+Şimdi listemizin herbir elemanın sözlük olmasını istiyoruz:
+-------------------
+articles=[
+        {"id":1,"title":"Deneme1","content":"deneme1 içerik"},
+        {"id":2,"title":"Deneme2","content":"deneme2 içerik"},
+        {"id":3,"title":"Deneme3","content":"deneme3 içerik"}
+    ]
+
+şimdi tek tek göndercez articles=articles
+
+<ul>
+    {% for article in articles %}
+        <li>{{article}}</li>
+    {% endfor %}
+</ul>
+
+article ın üstünde böyle gezindğimizde her bir article ımız bir sözlük yapısı oluyo
+
+ {% for article in articles %}
+        <li>Article ID: {{article.id}} - Title : {{article.title}} - Content: {{article.content}}</li>
+    {% endfor %}
+    böyle daha güzel gözüküyo 
+    makalelerimz listenin içinde sözlük yapısı olarka gelcek
+    bu laızm olcak yani
+    
+
+Dinamik url yapısı:
+bloğumuzda ilerde yüzlerce makale olablr
+ve bu makallelrin veritabanında bir id si olablr
+ve biz bu id ye göre detay sayfası oluşturmak isteyebilrz
+http://127.0.0.1:5000/article/1
+http://localhost:5000/article/100 100 no lu article ı görmek isteyebilrz
+bu şekilde dinamik url adreslerin tanımlama istiyor olablrz
+ve buraya100 yaızldığında bunu direk bir fonskiyona almak isteyebirm
+işte bu dinamik url yapısı
+buraya id geldiğinde string olduğun id değişkeninde tutulduğun görüyoruz
+
+@app.route("/article/<string:id>")
+
+id yi direk paramtre olark göndercez
+def detail(id):
+    return "Article Id:"+id
+sayfaya yansıttık
+
+
+Gerekli Modüller Mysql veritabanı oluşturma:
+------------------------------
+users tablosu aççaz
+
+önce flask la mysql bağlantısı kurmak için flask-mysqldb 
+dışardan kütphane dahil etmliyz form class ları için Flask-WTF
+user a şifre nin şifrelenmesi için passlib indircez
+tüm 3 .parti modüllerimz indi dahil edicez
+from flask import Flask,render_template,flash,redirect,url_for,session,logging,request
+forumlarımızdan bilgi almak için request kalanı sonra
+from flask_mysqldb import MySQL
+mysq le bğalnmak için
+
+formlarımz için
+form classımızı dahil edicez sonra formlarımz  için fieldları
+from wtforms import Form,StringField,TextAreaField,PasswordField,validators
+
+from passlib.hash import sha256_crypt
+türkçe destekli olsn diye utf8 general ci
+
+5 sütnluk tablo oluşsturdul
+id mizin primary key olmasını isitoyurz
+bir değerin bir defa bulunması durumu
+int olcak id
+index prrimary olcak yanii
+eklediğimz id nin otomati artmasını istyosak A.ı işaretle
+
+diğerleri text olcak
+name email username Password
+parolayı encrypt olarak göndercez
+auto ıncerement
+
+FLASK İLE MYSQL CONFİGURATİON:
+------------------
+biz app i oluşturduk ama bunu mysqle bağlamk çin configure etmeliyz
+https://flask-mysqldb.readthedocs.io/en/latest/
+önce app in configure edicez
+
+app.config["MYSQL_HOST"]="localhost" normal de site 
+app.config["MYSQL_USER"]="root"
+app.config["MYSQL_PASSWORD"]=""
+app.config["MYSQL_DB"]="ybblog"#db name
+app.config["MYSQL_"]="root"
+
+bizim veritabınından makaleleri aldığımzda bunun güzel bir formda olmalı ki güzel flaskta görüntüleyilm
+bu yapıda mysql den bilgi almak için cursor class oluştumalıyız ve bunu
+app.config["CURSOR_CLASS"]="DictCursor"
+şuan bağlandı ve bilgileri blyor flask
+mysqli kullanarak için burda dahil ettiğimz sınftan obje oluştumalıyız
+
+mysql=MySQL()app eşittir none olarak default geliyo
+ama biz app e bağlıcaz
+mysql=MySQL(app)
+artık flask la mysql bağlantı tamamlandı
+
+
+KULLANICI KAYIT FORMU:
+-------------------
+bunu pythonda bir classs sayesinde yapıcaz
+wt fromları kullanark oluşturcaz ve bunu template a göndercez
+wt formları nın bir sürü dökumantosyanu var bunlara bakarak
+formunda class üretebilrz
+wtforms yazdık
+https://wtforms.readthedocs.io/en/2.3.x/
+forms var burda
+Form classını dahil etmiştik bunla yapicik bunu
+wtf forms yazdık
+https://flask-wtf.readthedocs.io/en/stable/form.html burda nasıl kullancağımız var
+class MyForm(Form):
+    first_name = StringField(u'First Name', validators=[validators.input_required()])
+    last_name  = StringField(u'Last Name', validators=[validators.optional()])
+name in oluştuğu class StringField
+içine birsürü değer aylayıorz
+input alanın gösteren bir değer yaızcaz üstünde
+validators biz bazen sınırlandırma yapablrz bu işte
+validators ları liste olarak vericez
+length sınırlanıdmra yaparız
+validators.Email("mesaj)check yapar
+
+
+iki parola alanı girmeliyiz ilk girlien
+PasswordField şifreli gözkcek
+sonra kontrol edilen
+
+equal to confirm alanını içeriği aynı mı diye kontrol edicelk
+fieldname confirm dedik confirm le karşılaştırıp uymmuyosa hata vericek message la tanımlarız burda
+
+
+#Kullanıcı kayıt formu
+class RegisterForm(Form):
+    name = StringField("İsim-Soyisim",validators=[validators.Length(min=4,max=25),validators.DataRequired])
+    username = StringField("Kullanıcı adı",validators=[validators.Length(min=10,max=25),validators.DataRequired])
+    email = StringField("İsim-Soyisim",validators=[validators.DataRequired,validators.Email(message="Lütfen Geçerli bir Email adresi giriniz.")])
+    password = PasswordField("İsim-Soyisim",validators=[
+        validators.Length(min=12,max=45),
+        validators.DataRequired("Parola giriniz"),
+        validators.EqualTo(fieldname="confirm",message="Parola aynı değil")
+        ])
+    confirm=PasswordField("Parola doğrula",validators.DataRequired)
+
+
+
+
+
+
+
+ tempalte sın altına register.html oljuşstucaz
+ şimdi htmlsayfalarımzıda iki request var
+ sayfaya ulaştığımzda get requesti yapıyoruz veserver html sayfası dönüyo bize
+
+ bir de post requesti var bu bir forumu submit ettiğimzde http request türü
+ bir fonksiyon çalıştırcaksak requestin ne olduğunu anlamamız laızm
+ bunu anlamak için request kullancaz dahil ettiğimz
+
+ bu register da iki farklı request olablr
+ bunu flaska beltirmeliyiz
+ ykosa hata veriri
+ @app.route("/register",methods=["GET","POST"]) 
+ bu urlmiz iki requesti de alır diyoruz burda
+ önce register formundan bi rform oluştumlaıyız
+ form=RegisterForm(request.form) ve sayfama get ve post yapıldığınd a içindeki verileri almak için yazdık
+ bir request atılmışsa post yani
+ formun içine yerleşcek bunlara
+ bunlarıda veritabına kaydetcez sonra
+
+ if.request.method=="POST":
+    
+    else:
+
+    post yapıldıysa ğsteki get yapıldıysa alttaki çalıştırcaksak
+     sayfa yenilenice get requesti atmış oluyoruz
+     get requesti olduğunda formu göstermliyz
+     bunun için flaska bakcaz
+     https://flask.palletsprojects.com/en/1.1.x/patterns/wtforms/
+
+     return render_template("register.html",form=form)
+     oluşturduğumz formu göstermek isteğdimiz belirtiyoru
+
+     orda diyoki _form-helpers.html oluştur diyo bunun nasıl tanımlancağını da vermiş orda
+    sonra bunu dahil etmek için
+
+    {% from "_formhelpers.html" import render_field %}
+
+    sonra siz burda bir tane form oşturmaya çalışn diye bir şey söylüyo
+    bizim bir action umuz olmıcak ve bu zaman biz bu sayfaya post etmek istiyoruz anlamına geliyo
+
+    <form method="POST">
+
+</form>
+metohud belrttik
+fromu oluştruduk ve render_field yarıdmıyla inputlar oluşturyo
+
+birtane button oluşturcaz
+https://getbootstrap.com/docs/4.0/components/buttons/
+<button type="submit" class="btn btn-dark">Submit</button> 
+buttona basınca post yapılrı
+
+input alanlar bootstrap dahil etce daha güzel gözkütr
+render_fieldmakrosunu kullnarak elemetnleri istersek braya bootstrap clasıda ekelyblr
+zaman  ekledik
+{{ render_field(form.name,class="form-control") }}
+redirect belli bir sayfaya gir diyor post yapıldığında bunu gircez
+ama burda url_for la fonksiyon a gidp çalıtşarblrz
+
+ if request.method=="POST":
+        return redirect(url_for("index"))
+
+KULLANICIYI VERİTABANINA KAYDETME:
+-------------------------
+
+formun içine bilgiler yerleşcek
+post olma durumna göre kayıt işlemi yapcaz
+form.validate() metoduyla
+hem request postsa
+hem form valid bir formsa diye kouşul eklicez
+yani sıkıntı yoksa dicez
+sıkıtnı yoksa true döner
+
+redirect yapmadan önce kayıtı yapmalıyız
+
+mysqlde kş tabloya göre bilgileri eklemek istiyoruz
+
+name = form.name.data formun içindeki datayı almak istyorum ve name eşitleiid
+bunları tek tek ekledik
+ ama password farklı olcak paralamızı şifrelememizi sağlar
+ password=sha256_crypt (form.password.data)
+ fonskiyonla şifreledik
+ mysq  configure yapmıştık ve obje oluştruduk
+ objeden curosor oluşturcaz
+mysql veritabanı üstünde işlem yapamımız sağlar 
+sql sorgularımız çalıtşarblrz
+
+cursor=mysql.connection.cursor()
+mysql de işlem yapamız için gerekli olan şeyi yaptı
+sorgu="Insert into users(name,email,username,password) VALUES(%s,%s,%s,%s)"
+sıralaya eklemek isitoyruü
+değerleri sonra belirticez dedik
+
+şimdi cursor ıımda bir sorgu çalıştırcam
+cursor.execute(sorgu,(name,email,username,password))
+demet halinde gönderdik
+tek elemeanlı değer verirken de parantez içine
+ama veritabaında bir işlem yaptığımzda commitle belirtmeliyiz
+mysql objemizle yapablrz
+veritabanından sadece veri çekiyosak commit gerekli değil
+şimdi cursorı kapatıp mysqli kapatmamız laızm
+
+FLASH MESAJLARI KULLANMA:
+--------------------
+kayıt yapıldıktan sonra ekrana bir şey yazdırmak
+kullanıcıya belirli şlemlerden sonra feedback vermeliyz
+https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/
+post requesti yaptıktan sonra redirect yapıtoeuz
+
+flash with fcategorise da tempalte ı alarak kulnanblrsniz diyo
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class=flashes>
+    {% for category, message in messages %}
+      <li class="{{ category }}">{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+post request yapıldığında redirect yapıtğımızda flash yaparsak mesajımız var mı diye kontrol etcek var sadece
+göstrecek
+
+burda with var while e benzer
+
+bizim sayfamız n herhangi bir kısmında kullanmka isteyeblrz
+heryerden extende ettiğimz yere atcaz layout container ın altına
+herhangi message,ımız olduğunda gözkcek
+layouta dahil ettik şimdi blog.py den nasıl kuıllancağmızı göndercez
+
+veritanaı işleminden sonra posttaki
+
+flash işlemini gerçekleştirblirz
+
+flash fonksiyonu dahil etmiştik  message ve category alıyor
+
+hata verdi böyle
+burda app imize secret keyimizi vermessek kullanmayız
+
+app=Flask(__name__)#kendi bilgisyaramızda oluşturduğumz için app objesini oluşturyuoruz
+app.secret_key="ybblog"
+ıygulamayı oluşturdak tan hemen sonra yapablrz
+uygulamlarımızn secret keyi olması lazım flash kullnamka için
+
+flash ı çalıştırdık
+
+daha güzel yapmak için
+ul leri sildi message da
+
+bootstrap teki alertleri kullancaz
+
+bootstrap 4 alert
+
+https://getbootstrap.com/docs/4.0/components/alerts/
+
+farklı durumlar için şeyler var
+
+<div class="alert alert-success" role="alert">
+category success se success olamlı danger sa danger olmalı
+stringin içinde category i kullnamalıyız
+
+  {% for category, message in messages %}
+      <div class="alert alert-{{category}}" role="alert">
+        {{message}}
+      </div>
+    {% endfor %}
+
+    kullandığım message ı göndermek isiyoyrum dedik
+
+    --LOGIN URL VE LOGİN FORMUNUN TEMPLATE DA GÖSTERİLMESİ---
+
+    önce navbarda girişi eklicez
+
+    eğer post yapılcak sa belirtmemiz gerekiyodu
+    @app.route("/login",methods="POST,GET")
+
+    şimdi login fromu olşturucaz
+        eskiden yaptığımz gibi wtf forumu olşturucazz
+        class RegisterForm(Form):
+        Form dan INHERITANCE
+        formu olşturudk get request yapıldıktan göstermiz laızm
+
+bizim burda form helpers ı dahil etmemiz laızm render  almak için
+
+register dan nasıl dahil ettiğmzi alablrk
+{% from "includes/_formhelpers.html" import render_field %}
+
+class lara ihityacımız yok burda
+post request kullanamdık ve kendine döndü
+
+register ı logine yönlendircez
+#Login girişi
+post request olduğunda veritabanınında soruglamaya çlışcaz
+
+cursor=mysql.connection.cursor()
+mysql de işlem yapablmek için cursor
+result=cursor.execute(sorgu,[username])
+burda username i varsa bı değer e ataanablr
+
+if result>0:
+            pass
+        else:
+            flash("Böyle bir kullanıcı bulunmuyor...","danger")
+eğer result bir değer dönerse if e girrer yoksa
+get request yapıp aynı sayfay adönemiz laızmama önce 
+flash patlatcaz 
+category danger yaptıktan
+
+eskiden yapıtğımız gibi aldığımz değerler DictCursor yani dict olarka geliyo
+veriyi al fonksiyonu dataya atıcaz
+data=cursor.fetchone()
+real_password=data["password"]
+parolamızı aldık
+if sha256_crypt.verify(password_entered,real_password) normalde böyle
+ama bizdeç alışmıyor
+
+
+SESSİON KONTROL:
+-------------
+session diye ibşr şey dahil etmiştik
+bu değşken dictionary kullanımna benzer
+giriş yaptığımdab unu başlatmam laızm
+session["logged in"]=True
+bir anahtar değer verdik
+giriş yapınca true 
+olcak
+@app.route("/logout")
+def logout():
+    session.clear()
+    çıkışa basınca sesionı öldürcek
+
+Makalaler için kontrol paneli:
+
+şimdi buton eklicez 
+buton olcaz btn btn tarzıdna
+<a href="/addarticle" class="btn btn-danger">Makale ekle</a>
+
+Decarotarlar ile Kullanıcı giriş kontrolü:
+-------------------
+normalde dashborada giriş yapmadığımzda gözükmesede elimzle yazınca çıkıyo
+@app.route("/dashboard")#bunu yaptığımzda decoraterımız alttaki fonk u çalıştıryo
+bundan sonra bir decorater ekleyip sonraki fonku kontrol etsin
+kulanıcı girş kotrnolü yapcaz
+https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
+if "logged_in" in session:
+loggedi in diye bir şey varmı yani giriş yvarmı
+bir tane fonksiyonu çalıştırmadan önce bunu kullnamlaısın diyo sayfada
+#DASHBOARD
+@app.route("/dashboard")
+@login_required
+def dashboard():
+
+    return render_template ("dashboard.html")
+
+MAKALE EKELEME SAYFASI OLUŞTURMA FORUMJU OLUŞTURMA
+makale oluştruma sayfasında formu göstermemz laızm
+add article a gelip article formumfdan bir onje oluşturcaz
+obje form şeklinde olsun
+classı form-control yapmak daha güzel gösterir
+
+buttonu danger yaptık red için
+
+MAKALEYİ VERİTABANINA KAYDETME
+---------------------------
+
+burdaki text editor yerine cke editeörle güzelticez
+
+https://cdn.ckeditor.com/
+cdn için
+makale içeriğimiz yerinde cke editor kulanablrz
+layoutun altına attık
+
+#-------------#
+Makale sayfasındaki makaleleri görüntüleyilm:
+#-------------#
+önceden fetchone yapmıştık tek veri gelmişti
+
+şimdi fetchall yapcak liste şeklinde sözlük gelcek
+bootstrap list-group
+
+<ul class="list-group">
+  <li class="list-group-item">Cras justo odio</li>
+  <li class="list-group-item">Dapibus ac facilisis in</li>
+  <li class="list-group-item">Morbi leo risus</li>
+  <li class="list-group-item">Porta ac consectetur ac</li>
+  <li class="list-group-item">Vestibulum at eros</li>
+</ul>
+
+
+MAKALELERİN KONTROL PANELİNDE GÖSTERİLMESİ:
+------------------------
+dashboard a geldik
+htmldeki tablo yapısın kullanrak dashboard a güncelleme silme articlesın bilgilerin yazdıcarz
+https://getbootstrap.com/docs/4.0/content/tables/
+hoverable aldık üstüne gelince renk değişyo
+bunlara ek iki başlık daha olcak sil ve güncelle tarzıdna
+
+MAKALE DETAY SAYFASI:
+dinamik url yapısıyla yapcaz
+
+şimdi burda makalemimz html gibi gözüküyo ama 
+
+jinja template la flastaki sıkıntı olmıcak
+{{article.content|safe}}
+
+MAKALE SİLME:
+-----------
+başkalaırnının /delete/id ye ulaşamamıs laızm
+giriş yapmadan girememeleri için decoraterımız ı kullnamamzı laızm
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "logged_in" in session:
+            return f(*args, **kwargs)#aynı şekilde çalıştırır dashbroada yani
+        else:
+            flash("Bu sayfayı görüntülemek için giriş yapın...","danger")
+            return redirect(url_for("login"))
+    return decorated_function
+
+MAKALE GÜNCELLEME:
+-------------------
+addarticle dan alablrz renderları aynı gib olcak zatne
+
+
+MAKALE ARAMA:
+----------
+sqldeki lie operatörünü kullancaz
+https://bootsnipp.com/tags/search
+inputa bir name verdik arama değerini bunl alcaz
+araya basılmadan search a gdilmesini istemiyoruz
+ keyword=request.form.get("keyword")
+ posttan gelen değeri requesitn içinde fromd diye bir değer var keyword değerini get le alcaz
+
+ Code snippet özelliği ekleme:
+ ---------------------
+ post da kod paylaştığımzda kodlarımz renklncek
+ google code prettify
+ https://github.com/googlearchive/code-prettify
+ https://github.com/googlearchive/code-prettify/blob/master/README.md
+ kaynaktan eklicez
+
+ güncelle dediğimizde pre nin classı gidiyor
+ cke editoru config etmek lazım
+ <script>
+        CKEDITOR.replace( 'content',{
+            allowedContent:true
+        });
+        içeriklerimz durcak artık
+
+        <pre class="prettyprint">
+int x = foo();  /* This is a comment  <span class="nocode">This is not code</span>
+  Continuation of comment */
+int y = bar();
+</pre>
+
+flask upload file
+
+https://www.tutorialspoint.com/flask/flask_cookies.htm
