@@ -1,10 +1,9 @@
-from flask import Flask,render_template,flash,redirect,url_for,session,logging,request #web sitesi sunucusu oluşturmak için flask sınıfını dahil ediyoruz web sunucmzu ayağa kaldırmaya çalışacak
-from flask_mysqldb import MySQL
+from flask import Flask,render_template,flash,redirect,url_for,session,logging,request 
 from wtforms import Form,StringField,TextAreaField,PasswordField,validators
 from passlib.hash import sha256_crypt
 from functools import wraps
 
-app=Flask(__name__)#kendi bilgisyaramızda oluşturduğumz için app objesini oluşturyuoruz
+app=Flask(__name__)
 app.secret_key="ybblog"
 
 app.config["MYSQL_HOST"]="localhost"
@@ -115,7 +114,7 @@ def logout():
     session.clear()
     flash("Başarıyla çıkış yaptınız...","success")
     return redirect(url_for("index"))
-@app.route("/")#decorate #requesti  root olarak yaptık response için fonk yazcaz direk altına yazmalıyız 
+@app.route("/")
 def index():
    
     return render_template("index.html")
@@ -125,9 +124,9 @@ def index():
 def dashboard():
     cursor=mysql.connection.cursor()
 
-    sorgu="Select*FROM articles WHERE author=%s"#kullanıcı adına göre
+    sorgu="Select*FROM articles WHERE author=%s"
 
-    result=cursor.execute(sorgu,(session["username"],))#demet lodğunda virgül koydu
+    result=cursor.execute(sorgu,(session["username"],))
     if result>0 :
         articles=cursor.fetchall()
         return render_template("dashboard.html",articles=articles)
@@ -255,11 +254,4 @@ class ArticleForm(Form):
     title=StringField("Makale Başlığı:",validators=[validators.Length(min=5,max=100),validators.DataRequired(message="Alanı girmek zorunlu...")])
     content=TextAreaField("Makale İçeriği:",validators=[validators.length(min=5)])
 if __name__=="__main__":
-    app.run(debug=True)#koşul sağlanırsa local çalışcak geliştirme yapıtğımz için debug u göster dedik
-    #her bir python dosyamız bi moduül ve python dosyalını iki türlü kullanaabilirz.1)bu python deosyasının içine değişik fonksiyonlar yazarız
-    #ve daha sonra nu fonksiyonları fonskiyon çağrısıyla çağrrız.
-    #2)Biz bu python dosyasını başka bir python dosyasında modül olarak çalıştırabilrz. ve sadece fonksiyonları almak isteyebilrz.yani fonksiyon
-    #çağrılarının çalışmamasını isteyebilrz.name değişkeni maine eşit olursa terminalden çalıştığı belli olyuo ancak eğer bu python dosyasını 
-    #başka bir dosyadan aktarmak istersenk main olmaz
-    #bu şekilde br response dönemdiğimiz çin site hata verir local host çöalışyo yani
-
+    app.run(debug=True)
