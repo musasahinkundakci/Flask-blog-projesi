@@ -9,7 +9,7 @@ app.secret_key="ybblog"
 app.config["MYSQL_HOST"]="localhost"
 app.config["MYSQL_USER"]="root"
 app.config["MYSQL_PASSWORD"]=""
-app.config["MYSQL_DB"]="ybblog"#db name
+app.config["MYSQL_DB"]="ybblog"
 
 app.config['MYSQL_CURSORCLASS'] = "DictCursor"
 mysql=MySQL(app)
@@ -34,7 +34,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if "logged_in" in session:
-            return f(*args, **kwargs)#aynı şekilde çalıştırır dashbroada yani
+            return f(*args, **kwargs)
         else:
             flash("Bu sayfayı görüntülemek için giriş yapın...","danger")
             return redirect(url_for("login"))
@@ -77,7 +77,7 @@ def login():
         sorgu="Select*From user where username=%s"
         result=cursor.execute(sorgu,(username,))
         if result>0:
-            data=cursor.fetchone()#kullanıcını tüm bilgilerin alırız
+            data=cursor.fetchone()
             real_password=data["password"]
            
             if password_entered==real_password:
